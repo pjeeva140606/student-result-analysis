@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Student Result Analysis System Using Pandas and Matplotlib - College APP Project for SRM Institute of Science and Technology, Ramapuram, Chennai.">
+  <title>Student Result Analysis System | Pandas & Matplotlib</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <!-- Top Academic Institutional Banner -->
+  <header class="academic-topbar">
+    <div class="institution-info">
+      <div class="srm-crest-badge">SRM IST</div>
+      <div class="institution-text">
+        <h1>SRM Institute of Science and Technology, Ramapuram, Chennai</h1>
+        <p>Department of Computer Science and Engineering &bull; College of Engineering and Technology</p>
+      </div>
+    </div>
+    <div class="course-meta-tags">
+      <span class="meta-tag highlight">21CSC203P – Advanced Programming Practices</span>
+      <span class="meta-tag">II Year / III Semester</span>
+      <span class="meta-tag">Class: CSE / Section: K</span>
+    </div>
+  </header>
+
+  <!-- Main Application Header -->
+  <nav class="main-header">
+    <div class="app-title-area">
+      <div class="app-titles">
+        <h2>Student Result Analysis System Using Pandas and Matplotlib</h2>
+        <p>Analyze, understand and visualize academic performance.</p>
+      </div>
+      <div class="header-status-indicator">
+        <span class="status-dot"></span>
+        <span>Pandas &amp; Matplotlib Engine Active</span>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs" role="tablist">
+      <button class="nav-tab-btn active" data-tab="dashboard">
+        📊 Dashboard
+      </button>
+      <button class="nav-tab-btn" data-tab="students">
+        👥 Students Record
+      </button>
+      <button class="nav-tab-btn" data-tab="analysis">
+        📈 Result Analysis
+      </button>
+      <button class="nav-tab-btn" data-tab="visualizations">
+        📉 Visualizations (Matplotlib)
+      </button>
+      <button class="nav-tab-btn" data-tab="import-export">
+        💾 Data Import &amp; Export
+      </button>
+      <button class="nav-tab-btn" data-tab="app-review">
+        📑 APP Review Documentation
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="app-container">
+
+    <!-- ========================================================= -->
+    <!-- TAB 1: DASHBOARD -->
+    <!-- ========================================================= -->
+    <section id="tab-dashboard" class="tab-pane active">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Academic Performance Overview</h2>
+          <p class="section-subtitle">Real-time class statistical metrics computed via Pandas vectorization</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-outline" data-nav-target="students">View All Records</button>
+          <button class="btn btn-primary" id="btn-open-add-student">+ Add Student</button>
+        </div>
+      </div>
+
+      <!-- KPI Metrics Grid -->
+      <div class="metrics-grid">
+        <div class="metric-card primary">
+          <div class="metric-card-label">Total Enrolled Students</div>
+          <div class="metric-card-value" id="metric-total-students">--</div>
+          <div class="metric-card-sub">Class Section: CSE/K</div>
+        </div>
+
+        <div class="metric-card info">
+          <div class="metric-card-label">Class Average Percentage</div>
+          <div class="metric-card-value" id="metric-class-avg">--%</div>
+          <div class="metric-card-sub">Pandas computed mean across all subjects</div>
+        </div>
+
+        <div class="metric-card success">
+          <div class="metric-card-label">Overall Pass Percentage</div>
+          <div class="metric-card-value" id="metric-pass-pct">--%</div>
+          <div class="metric-card-sub" id="metric-pass-count">-- Passed / -- Re-appear</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-card-label">Class Highest Score</div>
+          <div class="metric-card-value" id="metric-highest-score">--</div>
+          <div class="metric-card-sub" id="metric-highest-student">--</div>
+        </div>
+
+        <div class="metric-card warning">
+          <div class="metric-card-label">Class Lowest Score</div>
+          <div class="metric-card-value" id="metric-lowest-score">--</div>
+          <div class="metric-card-sub" id="metric-lowest-student">--</div>
+        </div>
+      </div>
+
+      <!-- Dashboard Charts Preview -->
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h3>Subject-wise Average Marks</h3>
+            <span class="chart-badge">Matplotlib Bar Chart</span>
+          </div>
+          <div class="chart-card-body">
+            <img class="chart-img" data-chart="subject_averages" src="/api/charts/subject_averages" alt="Subject-wise Average Marks Chart">
+          </div>
+          <div class="chart-card-footer">
+            <span>Red dashed line indicates passing threshold (50 Marks)</span>
+            <a href="/api/charts/subject_averages" target="_blank" class="btn btn-outline btn-sm">Full Image</a>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h3>Pass vs Re-appear Distribution</h3>
+            <span class="chart-badge">Matplotlib Donut Chart</span>
+          </div>
+          <div class="chart-card-body">
+            <img class="chart-img" data-chart="pass_fail_distribution" src="/api/charts/pass_fail_distribution" alt="Pass vs Fail Distribution Chart">
+          </div>
+          <div class="chart-card-footer">
+            <span>Pass criterion: &ge;50 marks in each of the 5 subjects</span>
+            <a href="/api/charts/pass_fail_distribution" target="_blank" class="btn btn-outline btn-sm">Full Image</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Rankers Table on Dashboard -->
+      <div class="table-card">
+        <div class="table-controls">
+          <div>
+            <h3 style="font-size: 14px; font-weight: 700; color: var(--text-dark);">Top Performing Class Rankers</h3>
+            <p style="font-size: 12px; color: var(--text-muted);">Highest scoring students in Semester III (CSE/K)</p>
+          </div>
+          <button class="btn btn-outline btn-sm" data-nav-target="students">View Full Class Sheet &rarr;</button>
+        </div>
+        <div class="table-responsive">
+          <table class="academic-table">
+            <thead>
+              <tr>
+                <th style="width: 70px;">Rank</th>
+                <th>Register No</th>
+                <th>Student Name</th>
+                <th class="num">Total (/500)</th>
+                <th class="num">Percentage (%)</th>
+                <th>Grade</th>
+                <th style="text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="top-rankers-table-body">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 2: STUDENTS DATA MODULE -->
+    <!-- ========================================================= -->
+    <section id="tab-students" class="tab-pane">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Module 1 — Student Data Management</h2>
+          <p class="section-subtitle">Maintain, search, filter, and audit individual student marks and academic records</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <a href="/api/export-csv" class="btn btn-outline">📥 Export Processed CSV</a>
+          <button class="btn btn-primary" onclick="document.getElementById('btn-open-add-student').click()">+ Add New Student</button>
+        </div>
+      </div>
+
+      <!-- Filter and Search Bar -->
+      <div class="table-card">
+        <div class="table-controls">
+          <div class="table-search-group">
+            <input type="text" id="student-search" class="search-input" placeholder="Search by name or register no...">
+            
+            <select id="result-filter" class="filter-select">
+              <option value="all">Filter: All Results</option>
+              <option value="pass">Only Passed</option>
+              <option value="fail">Only Re-appear (Fail)</option>
+            </select>
+
+            <select id="sort-select" class="filter-select">
+              <option value="Rank-asc">Sort: Rank (High to Low)</option>
+              <option value="Percentage-desc">Sort: Percentage (High to Low)</option>
+              <option value="Percentage-asc">Sort: Percentage (Low to High)</option>
+              <option value="Student_Name-asc">Sort: Name (A-Z)</option>
+              <option value="Register_No-asc">Sort: Register Number</option>
+            </select>
+          </div>
+
+          <div id="student-count-display" style="font-size: 12px; font-weight: 600; color: var(--text-muted);">
+            Showing records...
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="academic-table">
+            <thead>
+              <tr>
+                <th class="num" style="width: 50px;">Rank</th>
+                <th>Register No</th>
+                <th>Student Name</th>
+                <th class="num" title="Data Structures and Algorithms">DSA (201J)</th>
+                <th class="num" title="Object Oriented Design & Programming">OOP (202J)</th>
+                <th class="num" title="Advanced Programming Practices">APP (203P)</th>
+                <th class="num" title="Discrete Mathematics">DM (201T)</th>
+                <th class="num" title="Computer Organization and Architecture">COA (204J)</th>
+                <th class="num" style="width: 75px;">Total</th>
+                <th class="num" style="width: 60px;">Avg</th>
+                <th class="num" style="width: 65px;">%</th>
+                <th>Result</th>
+                <th>Grade</th>
+                <th style="text-align: right; width: 140px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="students-table-body">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 3: RESULT ANALYSIS MODULE -->
+    <!-- ========================================================= -->
+    <section id="tab-analysis" class="tab-pane">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Module 3 — Data Analysis (Pandas Engine)</h2>
+          <p class="section-subtitle">Statistical computations, subject aggregates, and class-wise quartile distribution</p>
+        </div>
+      </div>
+
+      <!-- Subject-wise Analysis Table -->
+      <div class="table-card">
+        <div class="table-controls">
+          <div>
+            <h3 style="font-size: 14px; font-weight: 700; color: var(--text-dark);">Subject-wise Performance Analysis</h3>
+            <p style="font-size: 12px; color: var(--text-muted);">Computed via Pandas: mean(), max(), min(), std(), and pass rates</p>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="academic-table">
+            <thead>
+              <tr>
+                <th>Subject Code</th>
+                <th>Course Name</th>
+                <th class="num">Average</th>
+                <th class="num">Highest</th>
+                <th class="num">Lowest</th>
+                <th class="num">Passed</th>
+                <th class="num">Failed</th>
+                <th class="num">Pass %</th>
+                <th class="num">Std Dev</th>
+                <th>Top Scorer</th>
+              </tr>
+            </thead>
+            <tbody id="subject-analysis-table-body">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Class Descriptive Statistics Table -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+        <div class="table-card" style="margin-bottom: 0;">
+          <div class="table-controls">
+            <div>
+              <h3 style="font-size: 14px; font-weight: 700; color: var(--text-dark);">Pandas Descriptive Statistics (describe)</h3>
+              <p style="font-size: 12px; color: var(--text-muted);">Parametric breakdown across Class CSE/K</p>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="academic-table">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th class="num">Percentage (%)</th>
+                  <th class="num">Total Marks (/500)</th>
+                </tr>
+              </thead>
+              <tbody id="class-stats-table-body">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <h3 style="font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 12px;">SRM Grading Scheme Breakdown</h3>
+          <div id="grade-distribution-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 4: VISUALIZATION MODULE (MATPLOTLIB) -->
+    <!-- ========================================================= -->
+    <section id="tab-visualizations" class="tab-pane">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Module 4 — Data Visualization (Matplotlib Engine)</h2>
+          <p class="section-subtitle">Real-time dynamic academic graphical figures generated by Python Matplotlib Agg</p>
+        </div>
+        <button class="btn btn-outline btn-refresh-charts">🔄 Re-render All Charts</button>
+      </div>
+
+      <!-- Visualizations Grid -->
+      <div class="charts-row">
+        <!-- Chart 1 -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h3>1. Subject-wise Average Marks</h3>
+            <span class="chart-badge">Bar Chart</span>
+          </div>
+          <div class="chart-card-body">
+            <img class="chart-img" data-chart="subject_averages" src="/api/charts/subject_averages" alt="Subject-wise Average Marks">
+          </div>
+          <div class="chart-card-footer">
+            <span>Visualizes mean marks for each 3rd semester CSE subject</span>
+            <a href="/api/charts/subject_averages" download="subject_averages.png" class="btn btn-outline btn-sm">Download PNG</a>
+          </div>
+        </div>
+
+        <!-- Chart 2 -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h3>2. Student Performance Comparison</h3>
+            <span class="chart-badge">Percentage Bar Chart</span>
+          </div>
+          <div class="chart-card-body">
+            <img class="chart-img" data-chart="student_comparison" src="/api/charts/student_comparison" alt="Student Performance Comparison">
+          </div>
+          <div class="chart-card-footer">
+            <span>Green = Passed all subjects &bull; Red = Re-appear</span>
+            <a href="/api/charts/student_comparison" download="student_comparison.png" class="btn btn-outline btn-sm">Download PNG</a>
+          </div>
+        </div>
+
+        <!-- Chart 3 -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h3>3. Pass vs Fail Distribution</h3>
+            <span class="chart-badge">Donut Pie Chart</span>
+          </div>
+          <div class="chart-card-body">
+            <img class="chart-img" data-chart="pass_fail_distribution" src="/api/charts/pass_fail_distribution" alt="Pass vs Fail Distribution">
+          </div>
+          <div class="chart-card-footer">
+            <span>Shows overall qualification ratio for the class</span>
+            <a href="/api/charts/pass_fail_distribution" download="pass_fail_distribution.png" class="btn btn-outline btn-sm">Download PNG</a>
+          </div>
+        </div>
+
+        <!-- Chart 4 -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h3>4. Percentage Distribution &amp; Grades</h3>
+            <span class="chart-badge">Histogram</span>
+          </div>
+          <div class="chart-card-body">
+            <img class="chart-img" data-chart="percentage_distribution" src="/api/charts/percentage_distribution" alt="Percentage Distribution">
+          </div>
+          <div class="chart-card-footer">
+            <span>Frequency distribution binned according to SRM grade brackets</span>
+            <a href="/api/charts/percentage_distribution" download="percentage_distribution.png" class="btn btn-outline btn-sm">Download PNG</a>
+          </div>
+        </div>
+
+        <!-- Chart 5 -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h3>5. Subject Performance Comparison</h3>
+            <span class="chart-badge">Grouped Bar Chart</span>
+          </div>
+          <div class="chart-card-body">
+            <img class="chart-img" data-chart="subject_comparison" src="/api/charts/subject_comparison" alt="Subject Performance Comparison">
+          </div>
+          <div class="chart-card-footer">
+            <span>Compares Minimum, Average, and Maximum score per course</span>
+            <a href="/api/charts/subject_comparison" download="subject_comparison.png" class="btn btn-outline btn-sm">Download PNG</a>
+          </div>
+        </div>
+
+        <!-- Chart 6 -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h3>6. Top Performing Students</h3>
+            <span class="chart-badge">Horizontal Bar Chart</span>
+          </div>
+          <div class="chart-card-body">
+            <img class="chart-img" data-chart="top_performers" src="/api/charts/top_performers" alt="Top Performing Students">
+          </div>
+          <div class="chart-card-footer">
+            <span>Displays top rankers with percentage and register number</span>
+            <a href="/api/charts/top_performers" download="top_performers.png" class="btn btn-outline btn-sm">Download PNG</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 5: IMPORT & EXPORT MODULE -->
+    <!-- ========================================================= -->
+    <section id="tab-import-export" class="tab-pane">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">Module 1 &amp; 5 — CSV Data Import &amp; Export</h2>
+          <p class="section-subtitle">Batch ingest academic records or download analyzed result sheets via Pandas</p>
+        </div>
+      </div>
+
+      <div class="import-export-grid">
+        <!-- Import Card -->
+        <div class="action-card">
+          <h3>Import Student Results (CSV)</h3>
+          <p>Upload a standard CSV file with student marks. The system parses, validates schema, and re-computes all analytical metrics using Pandas.</p>
+
+          <div class="upload-dropzone" id="csv-dropzone">
+            <input type="file" id="csv-file-input" accept=".csv">
+            <div class="dropzone-icon">📁</div>
+            <div class="dropzone-text">Click or drag &amp; drop CSV file here</div>
+            <div class="dropzone-sub" id="csv-file-name">No file chosen</div>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <label class="form-label">Import Mode:</label>
+            <div style="display: flex; gap: 16px; font-size: 13px;">
+              <label style="cursor: pointer;">
+                <input type="radio" name="import-mode" value="replace" checked> Replace Current Dataset
+              </label>
+              <label style="cursor: pointer;">
+                <input type="radio" name="import-mode" value="append"> Append New Students Only
+              </label>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-primary" id="btn-upload-csv">Upload &amp; Analyze CSV</button>
+            <a href="/api/sample-csv" class="btn btn-outline">📥 Download Sample CSV Template</a>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <span style="font-size: 12px; font-weight: 700; color: var(--text-dark);">Expected CSV Column Format:</span>
+            <div class="schema-box">
+Register_No,Student_Name,Department,Semester,Section,DSA_21CSC201J,OOP_21CSC202J,APP_21CSC203P,DM_21MTH201T,COA_21CSC204J
+            </div>
+          </div>
+        </div>
+
+        <!-- Export & Reset Card -->
+        <div class="action-card">
+          <h3>Export Analyzed Results</h3>
+          <p>Download the complete class result spreadsheet containing all raw marks as well as Pandas computed totals, averages, percentages, results, and letter grades.</p>
+
+          <div style="margin-bottom: 24px;">
+            <a href="/api/export-csv" class="btn btn-primary" style="display: inline-flex;">
+              📥 Export Processed Results (.CSV)
+            </a>
+          </div>
+
+          <hr style="border: 0; border-top: 1px solid var(--border-subtle); margin-bottom: 20px;">
+
+          <h3>Reset Demonstration Dataset</h3>
+          <p>Restore the application to the genuine baseline dataset containing 28 SRM CSE/K student records across all 5 semester subjects.</p>
+          <button class="btn btn-danger-outline" id="btn-reset-data">
+            ↺ Reset to Default 28 Students
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 6: APP REVIEW / DOCUMENTATION -->
+    <!-- ========================================================= -->
+    <section id="tab-app-review" class="tab-pane">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">SRM APP Course Review &amp; Technical Report</h2>
+          <p class="section-subtitle">Standard presentation format for 21CSC203P – Advanced Programming Practices Review</p>
+        </div>
+        <button class="btn btn-outline" onclick="window.print()">🖨 Print Review Report</button>
+      </div>
+
+      <div class="review-container">
+        <!-- 1. Title / Project Information -->
+        <div class="review-section">
+          <div class="review-heading">1. Title / Project Information</div>
+          <div class="review-body">
+            <table class="academic-table" style="max-width: 700px; margin-bottom: 12px;">
+              <tr><td style="font-weight: 700; width: 220px;">Project Title</td><td>Student Result Analysis System Using Pandas and Matplotlib</td></tr>
+              <tr><td style="font-weight: 700;">Institution</td><td>SRM Institute of Science and Technology, Ramapuram, Chennai</td></tr>
+              <tr><td style="font-weight: 700;">Department</td><td>Department of Computer Science and Engineering</td></tr>
+              <tr><td style="font-weight: 700;">Course Code &amp; Title</td><td>21CSC203P – Advanced Programming Practices</td></tr>
+              <tr><td style="font-weight: 700;">Year &amp; Semester</td><td>II Year / III Semester</td></tr>
+              <tr><td style="font-weight: 700;">Class / Section</td><td>CSE / K</td></tr>
+              <tr><td style="font-weight: 700;">Core Libraries</td><td>Python, Pandas, Matplotlib, Flask</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- 2. Abstract -->
+        <div class="review-section">
+          <div class="review-heading">2. Abstract</div>
+          <div class="review-body">
+            <p>
+              The Student Result Analysis System is a software application developed to automate the management, statistical evaluation, and visual representation of student academic results. In conventional academic institutions, assessing large batches of examination records using manual methods or generic spreadsheets is often tedious, error-prone, and lacks dedicated visualization tools.
+            </p>
+            <p>
+              This project implements an integrated system using Python, the Pandas data analysis library, and the Matplotlib visualization library. The system accepts semester examination marks across multiple courses, performs automated vectorized calculations for total marks, average percentages, pass/fail statuses, and letter grades according to SRM grading regulations, and produces comprehensive statistical breakdowns. Furthermore, Matplotlib generates analytical graphs such as subject-wise average bars, class percentage distributions, pass/fail ratios, and student ranking comparisons. The application facilitates objective academic reviews and empowers educators with accessible visual data.
+            </p>
+          </div>
+        </div>
+
+        <!-- 3. Scope and Motivation -->
+        <div class="review-section">
+          <div class="review-heading">3. Scope and Motivation</div>
+          <div class="review-body">
+            <p><strong>Motivation:</strong> Academic evaluations require fast and reliable summarization of student performance. Calculating statistics such as standard deviation, median scores, quartile percentiles, and subject pass rates manually takes considerable time. This project was motivated by the need to apply modern Python programming practices learned in 21CSC203P to solve a practical department-level problem.</p>
+            <p><strong>Scope of the Project:</strong></p>
+            <ul>
+              <li>Managing academic records for students enrolled in CSE Semester III courses.</li>
+              <li>Performing rigorous data cleaning and validation on examination marks.</li>
+              <li>Computing total, average, overall percentage, and SRM letter grades (O, A+, A, B+, B, RA).</li>
+              <li>Evaluating subject-level metrics: highest mark, lowest mark, average mark, pass count, and failure count.</li>
+              <li>Generating six standardized Matplotlib visualizations for academic reviews and meetings.</li>
+              <li>Providing CSV import and export workflows for interoperability with college databases.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 4. Architecture Diagram -->
+        <div class="review-section">
+          <div class="review-heading">4. Architecture Diagram</div>
+          <div class="review-body">
+            <p>The system follows a modular, decoupled architecture where user interaction flows smoothly from the web presentation layer to the Python data processing and plotting engines:</p>
+            
+            <div class="diagram-canvas-box">
+              <div class="academic-arch-diagram">
+                <div class="arch-node">
+                  <div class="arch-node-title">User / Faculty</div>
+                  <div class="arch-node-tech">Web Browser</div>
+                </div>
+                <div class="arch-arrow">&rarr;</div>
+                <div class="arch-node">
+                  <div class="arch-node-title">Web Interface</div>
+                  <div class="arch-node-tech">HTML5 / CSS3 / JS</div>
+                </div>
+                <div class="arch-arrow">&rarr;</div>
+                <div class="arch-node">
+                  <div class="arch-node-title">Application Server</div>
+                  <div class="arch-node-tech">Flask REST API</div>
+                </div>
+                <div class="arch-arrow">&rarr;</div>
+                <div class="arch-node core">
+                  <div class="arch-node-title">Pandas Engine</div>
+                  <div class="arch-node-tech">Data Cleaning &amp; Stats</div>
+                </div>
+                <div class="arch-arrow">&rarr;</div>
+                <div class="arch-node core">
+                  <div class="arch-node-title">Matplotlib Engine</div>
+                  <div class="arch-node-tech">Figure Generation</div>
+                </div>
+                <div class="arch-arrow">&rarr;</div>
+                <div class="arch-node">
+                  <div class="arch-node-title">Result Presentation</div>
+                  <div class="arch-node-tech">Charts &amp; Mark Sheets</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. ER Diagram -->
+        <div class="review-section">
+          <div class="review-heading">5. ER Diagram (Data Model)</div>
+          <div class="review-body">
+            <p>The logical relational structure models Students, Subjects, and Result evaluations with clear constraints:</p>
+            <div class="diagram-canvas-box">
+              <div class="er-diagram-grid">
+                <div class="er-entity">
+                  <div class="er-entity-header">STUDENT</div>
+                  <ul class="er-attr-list">
+                    <li><span class="er-pk">PK Register_No</span> <span class="er-type">VARCHAR(15)</span></li>
+                    <li><span>Student_Name</span> <span class="er-type">VARCHAR(50)</span></li>
+                    <li><span>Department</span> <span class="er-type">VARCHAR(30)</span></li>
+                    <li><span>Semester</span> <span class="er-type">INTEGER</span></li>
+                    <li><span>Section</span> <span class="er-type">VARCHAR(10)</span></li>
+                  </ul>
+                </div>
+
+                <div class="er-entity">
+                  <div class="er-entity-header">SUBJECT</div>
+                  <ul class="er-attr-list">
+                    <li><span class="er-pk">PK Subject_Code</span> <span class="er-type">VARCHAR(10)</span></li>
+                    <li><span>Subject_Name</span> <span class="er-type">VARCHAR(60)</span></li>
+                    <li><span>Max_Marks</span> <span class="er-type">INTEGER (100)</span></li>
+                    <li><span>Pass_Mark</span> <span class="er-type">INTEGER (50)</span></li>
+                  </ul>
+                </div>
+
+                <div class="er-entity">
+                  <div class="er-entity-header">RESULT (Computed via Pandas)</div>
+                  <ul class="er-attr-list">
+                    <li><span class="er-pk">FK Register_No</span> <span class="er-type">VARCHAR(15)</span></li>
+                    <li><span>Total_Marks</span> <span class="er-type">FLOAT (0-500)</span></li>
+                    <li><span>Average</span> <span class="er-type">FLOAT</span></li>
+                    <li><span>Percentage</span> <span class="er-type">FLOAT (0-100)</span></li>
+                    <li><span>Result_Status</span> <span class="er-type">Pass | Fail</span></li>
+                    <li><span>Grade</span> <span class="er-type">O, A+, A, B+, B, RA</span></li>
+                    <li><span>Class_Rank</span> <span class="er-type">INTEGER</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Software Tools & Specifications -->
+        <div class="review-section">
+          <div class="review-heading">6. Software Tools &amp; Specifications</div>
+          <div class="review-body">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div>
+                <h4 style="font-size: 13px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">Software Stack</h4>
+                <ul>
+                  <li><strong>Programming Language:</strong> Python 3.13</li>
+                  <li><strong>Data Processing Library:</strong> Pandas 3.0.6</li>
+                  <li><strong>Visualization Library:</strong> Matplotlib 3.11.2 (Agg Backend)</li>
+                  <li><strong>Web Application Framework:</strong> Flask 3.1.3</li>
+                  <li><strong>Frontend Stack:</strong> HTML5, Vanilla CSS3 (Custom Academic Theme), Modern JavaScript (ES6+)</li>
+                  <li><strong>Data Storage:</strong> Comma-Separated Values (CSV) with dynamic DataFrame in-memory cache</li>
+                </ul>
+              </div>
+              <div>
+                <h4 style="font-size: 13px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">System &amp; Hardware Specifications</h4>
+                <ul>
+                  <li><strong>Operating System:</strong> Windows 10 / 11, Linux, or macOS</li>
+                  <li><strong>Browser Requirement:</strong> Google Chrome, Mozilla Firefox, or Microsoft Edge</li>
+                  <li><strong>Minimum Processor:</strong> Dual-Core 2.0 GHz or higher</li>
+                  <li><strong>RAM:</strong> 4 GB minimum (8 GB recommended)</li>
+                  <li><strong>Storage:</strong> 200 MB free space for code and data artifacts</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. List of Modules -->
+        <div class="review-section">
+          <div class="review-heading">7. List of Modules</div>
+          <div class="review-body">
+            <ol style="margin-left: 20px; font-weight: 600; color: var(--text-dark);">
+              <li style="margin-bottom: 6px;">Module 1 — Student Data Management</li>
+              <li style="margin-bottom: 6px;">Module 2 — Result Processing Engine</li>
+              <li style="margin-bottom: 6px;">Module 3 — Data Analysis &amp; Statistics</li>
+              <li style="margin-bottom: 6px;">Module 4 — Data Visualization Engine (Matplotlib)</li>
+              <li style="margin-bottom: 6px;">Module 5 — Search, Filtering &amp; Data Interoperability</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 8. Module Explanation -->
+        <div class="review-section">
+          <div class="review-heading">8. Module Explanation</div>
+          <div class="review-body">
+            
+            <div class="module-card">
+              <div class="module-card-title">Module 1 — Student Data Management</div>
+              <p>Responsible for record capture, modification, deletion, and persistent storage of student academic particulars.</p>
+              <div class="module-meta-grid">
+                <div class="module-meta-item"><strong>Main Functions</strong><code>add_student()</code>, <code>update_student()</code>, <code>delete_student()</code>, <code>load_data()</code></div>
+                <div class="module-meta-item"><strong>Input</strong>Register Number, Student Name, Department, Semester, Subject Marks (0-100)</div>
+                <div class="module-meta-item"><strong>Processing</strong>Input validation, range verification, duplicate checking on Register No</div>
+                <div class="module-meta-item"><strong>Output</strong>Updated Pandas DataFrame and synchronized CSV file storage</div>
+              </div>
+            </div>
+
+            <div class="module-card">
+              <div class="module-card-title">Module 2 — Result Processing Engine</div>
+              <p>Performs automated vectorized evaluation of academic scores across all five semester courses using Pandas methods.</p>
+              <div class="module-meta-grid">
+                <div class="module-meta-item"><strong>Main Functions</strong><code>_compute_derived_metrics()</code>, <code>assign_grade()</code></div>
+                <div class="module-meta-item"><strong>Input</strong>Raw 5-subject marks array for all registered students</div>
+                <div class="module-meta-item"><strong>Processing</strong>Vectorized total sum, average percentage calculation, pass mark thresholding (&ge;50 in each subject), letter grading, and rank calculation</div>
+                <div class="module-meta-item"><strong>Output</strong>Computed columns: Total, Average, Percentage, Result (Pass/Fail), Grade, Class Rank</div>
+              </div>
+            </div>
+
+            <div class="module-card">
+              <div class="module-card-title">Module 3 — Data Analysis &amp; Statistics</div>
+              <p>Generates subject-wise and class-wide statistical summaries to identify strengths, weaknesses, and performance bands.</p>
+              <div class="module-meta-grid">
+                <div class="module-meta-item"><strong>Main Functions</strong><code>get_summary_statistics()</code>, <code>get_subject_wise_analysis()</code>, <code>get_class_wise_analysis()</code></div>
+                <div class="module-meta-item"><strong>Input</strong>Processed DataFrame with academic results</div>
+                <div class="module-meta-item"><strong>Processing</strong>Aggregation functions: <code>mean()</code>, <code>std()</code>, <code>min()</code>, <code>max()</code>, <code>describe()</code>, quartile distribution (25%, 50%, 75%)</div>
+                <div class="module-meta-item"><strong>Output</strong>Structured JSON statistical payloads for tables and dashboard metrics</div>
+              </div>
+            </div>
+
+            <div class="module-card">
+              <div class="module-card-title">Module 4 — Data Visualization Engine</div>
+              <p>Leverages Matplotlib to plot academic charts with custom styling, clean benchmarks, and accurate labels.</p>
+              <div class="module-meta-grid">
+                <div class="module-meta-item"><strong>Main Functions</strong><code>generate_chart_subject_averages()</code>, <code>generate_chart_student_comparison()</code>, <code>generate_chart_pass_fail_distribution()</code>, etc.</div>
+                <div class="module-meta-item"><strong>Input</strong>Aggregated subject metrics and student percentages</div>
+                <div class="module-meta-item"><strong>Processing</strong>Matplotlib figure creation, bar/pie/hist plotting, color mapping, annotations, and byte buffer conversion</div>
+                <div class="module-meta-item"><strong>Output</strong>High-resolution PNG graphic streams served directly to the browser</div>
+              </div>
+            </div>
+
+            <div class="module-card">
+              <div class="module-card-title">Module 5 — Search, Filtering &amp; Data Interoperability</div>
+              <p>Provides fast live filtering and seamless CSV export/import workflows for faculty and administrators.</p>
+              <div class="module-meta-grid">
+                <div class="module-meta-item"><strong>Main Functions</strong><code>get_student_records()</code>, <code>import_csv()</code>, <code>export_processed_csv()</code></div>
+                <div class="module-meta-item"><strong>Input</strong>Search strings, status filters, sort criteria, uploaded CSV files</div>
+                <div class="module-meta-item"><strong>Processing</strong>Pandas conditional Boolean indexing, sorting with NaN handling, CSV schema validation</div>
+                <div class="module-meta-item"><strong>Output</strong>Filtered student record subsets, downloadable formatted CSV reports</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 9. Screenshots -->
+        <div class="review-section">
+          <div class="review-heading">9. Screenshots</div>
+          <div class="review-body">
+            <p>Visual documentation of the key implemented modules and views within the application:</p>
+            <div class="screenshot-grid">
+              <div class="screenshot-item">
+                <img src="/api/charts/subject_averages" alt="Subject Analysis Chart">
+                <div class="screenshot-caption">Fig 1: Subject-wise Average Marks (Matplotlib)</div>
+              </div>
+              <div class="screenshot-item">
+                <img src="/api/charts/student_comparison" alt="Student Comparison Chart">
+                <div class="screenshot-caption">Fig 2: Class Performance Comparison (Matplotlib)</div>
+              </div>
+              <div class="screenshot-item">
+                <img src="/api/charts/pass_fail_distribution" alt="Pass Fail Pie Chart">
+                <div class="screenshot-caption">Fig 3: Pass vs Fail Distribution Donut Chart</div>
+              </div>
+              <div class="screenshot-item">
+                <img src="/api/charts/percentage_distribution" alt="Percentage Histogram">
+                <div class="screenshot-caption">Fig 4: Grade Band Percentage Histogram</div>
+              </div>
+              <div class="screenshot-item">
+                <img src="/api/charts/subject_comparison" alt="Subject Min Avg Max">
+                <div class="screenshot-caption">Fig 5: Subject Performance Range (Grouped Bar)</div>
+              </div>
+              <div class="screenshot-item">
+                <img src="/api/charts/top_performers" alt="Class Rankers">
+                <div class="screenshot-caption">Fig 6: Top Performing Class Rankers</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10. Conclusion -->
+        <div class="review-section">
+          <div class="review-heading">10. Conclusion</div>
+          <div class="review-body">
+            <p>
+              The Student Result Analysis System successfully achieves the objectives established for the Advanced Programming Practices (21CSC203P) course. By leveraging the computational efficiency of Pandas and the graphical capabilities of Matplotlib, the application automates what was previously a labor-intensive manual task for academic departments.
+            </p>
+            <p>
+              The project demonstrates the practical application of key CSE competencies including vectorized data manipulation, statistical summarization, headless chart generation, modular software architecture, and modern web application development. The resulting system is robust, responsive, and directly applicable to semester result evaluation in SRM Institute of Science and Technology.
+            </p>
+          </div>
+        </div>
+
+        <!-- 11. References -->
+        <div class="review-section">
+          <div class="review-heading">11. REFERENCES</div>
+          <div class="review-body">
+            <ul>
+              <li>Python Software Foundation. <em>Python Language Reference, version 3.13</em>. Available at: <a href="https://docs.python.org/3/" target="_blank">https://docs.python.org/3/</a></li>
+              <li>Wes McKinney et al. <em>Pandas: Powerful Python Data Analysis Toolkit</em>. Available at: <a href="https://pandas.pydata.org/docs/" target="_blank">https://pandas.pydata.org/docs/</a></li>
+              <li>John D. Hunter et al. <em>Matplotlib: Visualization with Python</em>. Available at: <a href="https://matplotlib.org/stable/" target="_blank">https://matplotlib.org/stable/</a></li>
+              <li>Pallets Projects. <em>Flask Documentation (Version 3.1.x)</em>. Available at: <a href="https://flask.palletsprojects.com/" target="_blank">https://flask.palletsprojects.com/</a></li>
+              <li>SRM Institute of Science and Technology. <em>Curriculum &amp; Syllabus for B.Tech CSE (Regulations 2021)</em>. Department of Computer Science and Engineering.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================= -->
+  <!-- MODAL: ADD STUDENT -->
+  <!-- ========================================================= -->
+  <div class="modal-overlay" id="modal-add-student">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Add New Student Record</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <form id="form-add-student">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Register Number *</label>
+              <input type="text" name="Register_No" class="form-input" placeholder="e.g. RA2311003020029" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Student Name *</label>
+              <input type="text" name="Student_Name" class="form-input" placeholder="e.g. Suresh Kumar" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Department</label>
+              <input type="text" name="Department" class="form-input" value="CSE" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Semester &amp; Section</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="number" name="Semester" class="form-input" value="3" min="1" max="8" style="width: 70px;">
+                <input type="text" name="Section" class="form-input" value="CSE/K">
+              </div>
+            </div>
+
+            <!-- Subject Marks -->
+            <div class="form-group full-width" style="margin-top: 10px; border-top: 1px solid var(--border-subtle); padding-top: 12px;">
+              <h4 style="font-size: 13px; font-weight: 700; color: var(--primary-navy); margin-bottom: 8px;">Course Marks (Out of 100, Passing: 50)</h4>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">DSA (21CSC201J) *</label>
+              <input type="number" name="DSA_21CSC201J" class="form-input" min="0" max="100" placeholder="0 - 100" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">OOP (21CSC202J) *</label>
+              <input type="number" name="OOP_21CSC202J" class="form-input" min="0" max="100" placeholder="0 - 100" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">APP (21CSC203P) *</label>
+              <input type="number" name="APP_21CSC203P" class="form-input" min="0" max="100" placeholder="0 - 100" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">DM (21MTH201T) *</label>
+              <input type="number" name="DM_21MTH201T" class="form-input" min="0" max="100" placeholder="0 - 100" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">COA (21CSC204J) *</label>
+              <input type="number" name="COA_21CSC204J" class="form-input" min="0" max="100" placeholder="0 - 100" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline btn-modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Student Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL: EDIT STUDENT -->
+  <!-- ========================================================= -->
+  <div class="modal-overlay" id="modal-edit-student">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Edit Student Marks &amp; Details</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <form id="form-edit-student">
+        <div class="modal-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Register Number</label>
+              <input type="text" id="edit-reg-no" class="form-input" readonly>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Student Name *</label>
+              <input type="text" id="edit-student-name" name="Student_Name" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Department</label>
+              <input type="text" id="edit-department" name="Department" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Semester &amp; Section</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="number" id="edit-semester" name="Semester" class="form-input" style="width: 70px;">
+                <input type="text" id="edit-section" name="Section" class="form-input">
+              </div>
+            </div>
+
+            <div class="form-group full-width" style="margin-top: 10px; border-top: 1px solid var(--border-subtle); padding-top: 12px;">
+              <h4 style="font-size: 13px; font-weight: 700; color: var(--primary-navy); margin-bottom: 8px;">Subject Marks (Out of 100)</h4>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">DSA (21CSC201J)</label>
+              <input type="number" id="edit-mark-dsa" name="DSA_21CSC201J" class="form-input" min="0" max="100" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">OOP (21CSC202J)</label>
+              <input type="number" id="edit-mark-oop" name="OOP_21CSC202J" class="form-input" min="0" max="100" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">APP (21CSC203P)</label>
+              <input type="number" id="edit-mark-app" name="APP_21CSC203P" class="form-input" min="0" max="100" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">DM (21MTH201T)</label>
+              <input type="number" id="edit-mark-dm" name="DM_21MTH201T" class="form-input" min="0" max="100" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">COA (21CSC204J)</label>
+              <input type="number" id="edit-mark-coa" name="COA_21CSC204J" class="form-input" min="0" max="100" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline btn-modal-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Records</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL: STUDENT MARK SHEET / TRANSCRIPT -->
+  <!-- ========================================================= -->
+  <div class="modal-overlay" id="modal-mark-sheet">
+    <div class="modal-card" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3>Semester Grade Sheet / Transcript</h3>
+        <button class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 24px;">
+        <div class="mark-sheet-container">
+          <div class="mark-sheet-header">
+            <h4>SRM INSTITUTE OF SCIENCE AND TECHNOLOGY</h4>
+            <h5>Ramapuram Campus, Chennai - 600089</h5>
+            <p>Department of Computer Science and Engineering &bull; Office of Academic Affairs</p>
+          </div>
+
+          <div class="mark-sheet-title-strip">
+            STUDENT SEMESTER RESULT STATEMENT – NOVEMBER 2026
+          </div>
+
+          <table class="student-meta-table">
+            <tr>
+              <td class="field-name">Register Number:</td>
+              <td class="field-val" id="sheet-reg-no" style="font-family:monospace; font-weight:700;">--</td>
+              <td class="field-name">Degree &amp; Branch:</td>
+              <td class="field-val" id="sheet-department">B.Tech - CSE</td>
+            </tr>
+            <tr>
+              <td class="field-name">Student Name:</td>
+              <td class="field-val" id="sheet-student-name" style="font-weight:700;">--</td>
+              <td class="field-name">Semester / Section:</td>
+              <td class="field-val"><span id="sheet-semester">--</span> (<span id="sheet-section">--</span>)</td>
+            </tr>
+            <tr>
+              <td class="field-name">Batch:</td>
+              <td class="field-val">2023 - 2027</td>
+              <td class="field-name">Class Rank:</td>
+              <td class="field-val" id="sheet-rank" style="font-weight:700; color:var(--primary-blue);">--</td>
+            </tr>
+          </table>
+
+          <table class="academic-table" style="margin-bottom: 16px; border: 1px solid var(--border-medium);">
+            <thead>
+              <tr>
+                <th style="width: 40px; text-align: center;">S.No</th>
+                <th>Course Code</th>
+                <th>Course Title</th>
+                <th class="num">Max Marks</th>
+                <th class="num">Marks Scored</th>
+                <th style="text-align: center;">Grade</th>
+                <th style="text-align: center;">Status</th>
+              </tr>
+            </thead>
+            <tbody id="sheet-subjects-body">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+
+          <!-- Performance Summary Block -->
+          <div style="background-color: var(--bg-subtle); border: 1px solid var(--border-medium); border-radius: var(--radius-sm); padding: 14px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: center;">
+            <div>
+              <div style="font-size: 11px; font-weight: 600; color: var(--text-muted);">TOTAL MARKS</div>
+              <div id="sheet-total-marks" style="font-size: 16px; font-weight: 700; color: var(--text-dark); margin-top: 2px;">--</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; font-weight: 600; color: var(--text-muted);">AVERAGE</div>
+              <div id="sheet-average-marks" style="font-size: 16px; font-weight: 700; color: var(--text-dark); margin-top: 2px;">--</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; font-weight: 600; color: var(--text-muted);">PERCENTAGE</div>
+              <div id="sheet-percentage" style="font-size: 16px; font-weight: 700; color: var(--primary-blue); margin-top: 2px;">--</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; font-weight: 600; color: var(--text-muted);">RESULT / GRADE</div>
+              <div style="margin-top: 2px;">
+                <span id="sheet-final-result" class="badge badge-pass">PASS</span>
+                <span id="sheet-final-grade" class="badge badge-grade grade-A" style="margin-left: 4px;">A</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" id="btn-print-mark-sheet">🖨 Print Mark Sheet</button>
+        <button type="button" class="btn btn-primary btn-modal-cancel">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
